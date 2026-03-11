@@ -1,0 +1,66 @@
+{
+  "0": {
+    "text": "LangChain 快速入门与 Agent 开发实战 -Part  \n1 \n一、 LangChain.ai 工具生态介绍  \n本期公开课，我将为大家详细讲解元老级 Agent 开发工具 ——LangChain 。\n1. GPT-3时代下第一代大模型开发工具  \n  LangChain可以称之为自 2022年底大模型技术爆火以来的第一个真正意义上的大模型开发框架。大\n模型本质上无法直接解决实际的问题，仅仅是一个能够分析、推理和生成文本的黑盒。直到现在，所有\n的开发者们仍然在不断探索如何把大模型的强大能力与实际应用场景结合起来，而当时 LangChain的出\n现，直接让大模型开发变得简单起来，它将大模型开发过程中常用的功能、工具、流程等等全部封装成\n一个个的组件，使开发者可以像搭乐高积木一样，快速的组合出适用于不同场景需求的大模型应用。\nLangChain的首个版本于 2022年10 月开源，直到现在仍然再以一个飞快的速度不断进行迭代升\n级。从一个开源  Python/TS 框架逐渐发展，形成包括 “ 链 ” 和 “ 代理 ” 等核心组件，现在已走向企业级阶\n段，发展成了 LangChain AI，其拥有目前 Agent技术领域最大的开源生态，衍生出了多个开源项目框\n架，各自都在大模型的技术领域承担着不同的开发任务角色。  \n从一个形象的角度来说， LangChain 的功能定位其实并不是我们现在所谓的 Agent 开发框架，而是一\n个大模型功能增强器，借助 LangChain ，哪怕在 GPT-3 模型时代，也能让模型完成对话、拥有记忆、甚至\n是完成结构化输出等功能。\nLangChain 官网： https://www.langchain.com/\n2. 备受争议的工具功能  \n虽说 LangChain 的开源，在短时间内收获了大量的开发者用户，这也一度使得 LangChain 在 2023 年\n成为最受欢迎的大模型开发工具没有之一。但每项技术都会受限于其诞生的时代背景， LangChain 也不\n例外。在 GPT-3 时代，大模型以补全模型为主，只能以类似 “ 成语接龙 ” 的方式对文本进行补全，并且实际\n运行效果也非常不稳定。此时 LangChain 借助一些高层封装的 API ，能够让模型完成对话、调用外部工\n具、甚至是结构化输出等功能，这在当时是非常大的进步，也为开发者提供了极大的便利。",
+    "metadata": {
+      "page": 1,
+      "source": "uploads/20260309_095239_0.LangChain技术生态介绍.pdf",
+      "chunk_size": 1014
+    }
+  },
+  "1": {
+    "text": "但是，伴随着 GPT-3.5 模型的发布，对话模型正式登上历史的舞台，并逐渐成为主流。而得益于对话\n模型更强的指令跟随能力，很多 GPT-3 需要借助 LangChain 才能完成的工作，已经成为 GPT-3.5 原生自带\n的一些功能。而等到 GPT-4 逐渐普及，包括调用外部工具（ Function calling ）、结构化输出、系统提示\n词等功能，都成了模型的基础功能。而对于开发者而言，此时再使用 LangChain 再对这些功能进行封装\n就显得多此一举。\n【考古】补全模型与对话模型对比介绍： https://www.bilibili.com/video/BV1Vk4y1V76h\n因此在 2023 年下半年起的很长一段时间里， LangChain 饱受争议，很多开发者觉得 LangChain 代码\n冗余、编写复杂，甚至有开发者觉得 LangChain 太过于复杂，一个模型调用的过程就涉及到数十个类，\n一个项目开发动辄就要用到几十个不同的类，而说明文档更是几百个不同的常用类需要记住，其复杂程\n度不亚于学习一门全新的编程语言。\n",
+    "metadata": {
+      "page": 2,
+      "source": "uploads/20260309_095239_0.LangChain技术生态介绍.pdf",
+      "chunk_size": 472
+    }
+  },
+  "2": {
+    "text": "而这也使得在某个时间段， LangChain 的开发者大规模流失。\n举个例子，为了更好的兼容不同模型的调用，谷歌 ADK 采用了 LiteLlm 作为底层模型调度框架，一\n个库即可调用各类模型，而 LangChain 则为每个主流模型单独封装了一个库，调用不同模型的时候\n需要导入不同模型对应的库，例如调用 DeepSeek 就需要安装 langchain-deepseek，而调用\nGemini则需要安装 langchain-google-genai。\n3. 更加适用于当前 Agent 开发的 LangChain 工具生态  \n在经历了短暂的阵痛后， LangChain 果断进行了大刀阔斧的改革。 LangChain 调整的思路非常简\n单：\n1. \n模块类别 示例功能\n模型接口封装 OpenAI、 Claude 、 Cohere 、 Qwen 等模型统一调用方式\n输出结构化 自动从模型中解析  JSON 、 Schema 、函数签名、文档等\nMemory 管理 Buffer、 Summary 、 Entity 、 Conversation Memory 等\nTool 接入 Web 搜索、 SQL 数据库、 Python 执行器、 API 代理等\nAgent 架构 ReAct、 Self-Ask 、 OpenAI Function Agent 等调度机制\nRAG 集成 多种  Retriever 、 Vector Store 、文档拆分策略\nServer/API 发布 快速将链部署为  Web 服务或  A2A Agent\nDebug & Callback Token 使用统计、 LangSmith 可视化追踪等LangChain 本身仍然坚守作为 “ 模型能力增强器 ” 的功能定位，并且逐渐稳定更新节奏和频率，虽说\n实际使用 LangChain 进行开发的代码量仍然没变，但模块划分更加清晰、功能更加丰富和稳定，逐\n步达到企业级应用水准。目前最新版 LangChain 的核心功能如下：\n✅ 所以说： LangChain 是  LLM 功能开发的「积木工厂」，不是简单框架，而是模型增强器  \n+ 应用组装工具箱。\n2. 与2023年下半年开源 LangGraph ， LangGraph 作为基于 LangChain 的更高层次封装，能够更加便捷\n的搭建图结构的大模型工作流，也就是现在所谓的 Multi-Agent 系统，而 LangGraph 也是目前\nLangChian 家族最核心的 Multi-Agent 开发框架。同时可以搭配 LangGraph-Studio 进行实时效果监\n测，实际效果如下所示：",
+    "metadata": {
+      "page": 3,
+      "source": "uploads/20260309_095239_0.LangChain技术生态介绍.pdf",
+      "chunk_size": 1119
+    }
+  },
+  "3": {
+    "text": "项目官网： https://github.com/langchain-ai/langgraph\n需要注意的是， LangGraph 底层功能仍然是基于 LangChain 来实现，简单理解 LangGraph 本\n质上其实就是 LangChain 的流程调度与智能体编排系统\n3. 开源大模型工作流（ Agent ）可视化监控与测试平台 LangSmith ，借助 LangSmith ，开发者能够更\n加简单便捷监控基于 LangChain 生态的 Agent 运行流程、测试 Agent 功能和不同提示词等，从而使得\nLangChain 进一步面向企业级应用开发框架；\nLangSmith 官网： https://www.langchain.com/langsmith\n4. 同时，考虑到 LangChain 本身较为复杂这一情况，开源了 LangChain 的 “ 可视化实现版 ”——\nLangFlow ，这是一款形式对标 Dify 、可以通过可视化方式、借助拖拉拽来完成 LangChain 相同功能\n的开发工具。",
+    "metadata": {
+      "page": 4,
+      "source": "uploads/20260309_095239_0.LangChain技术生态介绍.pdf",
+      "chunk_size": 461
+    }
+  },
+  "4": {
+    "text": "同时，这也是目前 LangChain 工具家族中，仅次于 LangChain （ 109k stars ）第二受欢迎的开发框\n架，在 GitHub 上已斩获接近 72k stars 。\nLangFlow 官网： https://www.langflow.org/\n同时，相比 Dify ， LangFlow 功能更加完善，并且没有任何商业化的计划，可长期稳定使用。\n目前 LangChain 工具生态如图所示：",
+    "metadata": {
+      "page": 5,
+      "source": "uploads/20260309_095239_0.LangChain技术生态介绍.pdf",
+      "chunk_size": 205
+    }
+  },
+  "5": {
+    "text": "此外，作为底层框架本身， LangChain 本身仍保持了非常快速的迭代速度，例如就在 5 月 29 号，\nLangChain 发布最新版本，新增了目前通用智能体项目非常需要的沙盒环境（ SandBox ）：\n同时， LangChain 也是最早官宣支持谷歌 A2A 技术协议的开发框架，这也使得 LangChain 本身的先\n进性一直处于整个 Agent 开发框架的前列。\n4. 当下大模型开发人员必备技能： LangChain  \n可以说，经过了近 3 年的发展，目前 LangChain 工具生态已经非常全面，能适用于各类不同场景的开\n发需求，无论是小规模实验、还是大规模商业化部署，无论是使用代码开发、还是偏向使用低代码开发\n工具， LangChain 工具家族都能满足开发者的需求。\n也正因如此， LangChain 可以说是历经大模型 Agent 技术发展巨变但仍 “ 屹立不倒 ” 的开发工具，哪怕\n今年以来 OpenAI 、谷歌等 AI 巨头纷纷下场发布全新一代 Agent 开发框架，但 LangChian 工具本身仍在很\n多场景下不可替代。而相比之下，类似 AotuGen 、 CrewAI 等工具的适用面，在大模型技术飞速发展的当\n下，正在逐渐减少。截止目前， LangChain 仍然是目前大模型开发岗位应用最广的框架没有之一：",
+    "metadata": {
+      "page": 6,
+      "source": "uploads/20260309_095239_0.LangChain技术生态介绍.pdf",
+      "chunk_size": 576
+    }
+  },
+  "6": {
+    "text": "同时 LangChain 也是很多著名的开源项目的底层开发框架，如字节前端时间开源的 Deep Research\n应用 deerflow 就是采用了 LangChain&LangGraph 框架：\n项目主页： https://github.com/bytedance/deer-flow\n此外如谷歌近期开源的 Gemini Fullstack LangGraph Quickstart 热门项目，也是使用 LangGraph 作为基\n础框架：",
+    "metadata": {
+      "page": 7,
+      "source": "uploads/20260309_095239_0.LangChain技术生态介绍.pdf",
+      "chunk_size": 221
+    }
+  },
+  "7": {
+    "text": "项目主页： https://github.com/google-gemini/gemini-fullstack-langgraph-quickstart",
+    "metadata": {
+      "page": 8,
+      "source": "uploads/20260309_095239_0.LangChain技术生态介绍.pdf",
+      "chunk_size": 76
+    }
+  }
+}
