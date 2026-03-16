@@ -1,6 +1,6 @@
 import logging
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.orm import declarative_base
 from app.core.config import settings
 
 # 设置 SQLAlchemy 日志级别为 WARNING，这样就不会显示 INFO 级别的 SQL 查询日志
@@ -8,7 +8,7 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
 
 # 创建异步引擎
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    settings.database_url,
     echo=False,  # 设置为 False  关闭 SQL 日志
     pool_pre_ping=True,  # 自动检测断开的连接
     pool_size=5,  # 连接池大小， 保持 5 个连接处于可用状态。在高并发情况下，最多可以同时处理 5 个数据库请求，而不需要每次都去创建新的连接。
@@ -16,7 +16,7 @@ engine = create_async_engine(
 )
 
 # 创建异步会话工厂
-AsyncSessionLocal = sessionmaker(
+AsyncSessionLocal = async_sessionmaker(
     # 指定创建的会话类型为异步会话，SQLAlchemy 使用 class_ 来避免命名冲突
     bind=engine,
     class_=AsyncSession,

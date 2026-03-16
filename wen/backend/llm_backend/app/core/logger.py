@@ -1,7 +1,6 @@
 from loguru import logger
 import sys
 from pathlib import Path
-import json
 
 # 创建日志目录， Path 指的是当前工作目录下的 logs 目录。如果你在不同的目录中运行脚本，logs 目录的位置也会相应变化。
 # 也就是说：logs 目录的位置取决于运行 Python 程序时的当前工作目录。不同的组件或模块在不同的工作目录下运行时，logs 目录也会位于不同的位置。

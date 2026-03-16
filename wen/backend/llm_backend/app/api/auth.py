@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.core.security import create_access_token, get_current_user
@@ -28,7 +27,7 @@ async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
 @router.post("/token", response_model=Token)
 async def login(user_data: UserLogin, db: AsyncSession = Depends(get_db)):
     user_service = UserService(db)
-    user = await user_service.authenticate_user(user_data.email, user_data.password)
+    user = await user_service.authenticate_user(str(user_data.email), user_data.password)
     if not user:
         raise HTTPException(
             status_code=401,

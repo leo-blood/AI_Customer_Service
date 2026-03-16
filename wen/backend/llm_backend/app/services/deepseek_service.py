@@ -1,11 +1,10 @@
 from typing import List, Dict, AsyncGenerator, Callable, Optional
 from openai import AsyncOpenAI
+from openai.types.chat import ChatCompletionMessageParam
+
 from app.core.config import settings
 import json
 from app.core.logger import get_logger
-from app.core.database import AsyncSessionLocal
-from app.models.conversation import Conversation, DialogueType
-from app.models.message import Message
 from app.services.redis_semantic_cache import RedisSemanticCache
 import time
 import asyncio
@@ -36,10 +35,10 @@ class DeepseekService:
 
     async def generate_stream(
         self, 
-        messages: List[Dict],
+        messages: List[ChatCompletionMessageParam],
         user_id: Optional[int] = None,
         conversation_id: Optional[int] = None,
-        on_complete: Optional[Callable[[int, int, List[Dict], str], None]] = None
+        on_complete: Optional[Callable[[int, int, List[ChatCompletionMessageParam], str], None]] = None
     ) -> AsyncGenerator[str, None]:
         """流式生成回复"""
         try:
@@ -61,7 +60,7 @@ class DeepseekService:
                 # 调用者是否传入了回调函数
                 # Python 中，函数也是对象，可以像参数一样传递
                 if on_complete and user_id is not None and conversation_id is not None:
-                    await on_complete(user_id, conversation_id, messages, cached_response)
+                    on_complete(user_id, conversation_id, messages, cached_response)
                 return
 
             # 缓存未命中,调用API
@@ -90,14 +89,14 @@ class DeepseekService:
             
             # 如果有回调，执行回调
             if on_complete and user_id is not None and conversation_id is not None:
-                await on_complete(user_id, conversation_id, messages, complete_response)
+                on_complete(user_id, conversation_id, messages, complete_response)
                 
         except Exception as e:
             logger.error(f"Error in generate_stream: {str(e)}", exc_info=True)
             error_msg = json.dumps(f"生成回复时出错: {str(e)}", ensure_ascii=False)
             yield f"data: {error_msg}\n\n"
 
-    async def generate(self, messages: List[Dict]) -> str:
+    async def generate(self, messages: List[ChatCompletionMessageParam]) -> str:
         """非流式生成回复"""
         try:
             response = await self.client.chat.completions.create(

@@ -1,15 +1,3 @@
-import sys
-from pathlib import Path
-
-# 添加项目根目录到 PYTHONPATH
-ROOT_DIR = Path(__file__).parent.parent
-sys.path.append(str(ROOT_DIR))
-
-# 确保能找到 app 模块
-# print(f"Python path: {sys.path}")
-# print(f"Current directory: {Path.cwd()}")
-# print(f"Root directory: {ROOT_DIR}")
-
 import asyncio
 from app.core.database import engine, Base
 from app.models import User, Conversation, Message

@@ -26,8 +26,7 @@ class Conversation(Base):
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
     status = Column(String(20), default="ongoing")
     dialogue_type = Column(Enum(DialogueType), nullable=False)
-    
-    # 关系
+
     # 建立 ORM 层面的关联关系，可以通过 conversation.user 直接访问所属用户
     # 与 User 模型中的 conversations 属性相互关联，形成完整的双向关系
     user = relationship("User", back_populates="conversations")

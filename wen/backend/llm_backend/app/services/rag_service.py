@@ -1,12 +1,9 @@
-from typing import Dict, List, Optional
+from typing import Dict, List
 from pathlib import Path
-import asyncio
-from app.core.config import settings
 from .embedding_service import EmbeddingService
 import PyPDF2
 from docx import Document
 import re
-import os
 
 class RAGService:
     def __init__(self):
@@ -97,7 +94,7 @@ class RAGService:
     async def _process_word(self, file_path: Path) -> List[str]:
         """处理 Word 文件"""
         try:
-            doc = Document(file_path)
+            doc = Document(str(file_path))
             text_content = []
             for para in doc.paragraphs:
                 if para.text.strip():

@@ -37,7 +37,7 @@ class UserService:
         # 创建新用户
         db_user = User(
             username=user_data.username,
-            email=user_data.email,
+            email=str(user_data.email),
             password_hash=get_password_hash(user_data.password)
         )
         self.db.add(db_user)  # 此时还在事务缓存中，没有真正写入数据库

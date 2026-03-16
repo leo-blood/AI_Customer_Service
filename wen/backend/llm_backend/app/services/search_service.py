@@ -1,6 +1,7 @@
 from typing import List, Dict, AsyncGenerator, Optional, Callable
 import json
 import asyncio
+from openai.types.chat import ChatCompletionMessageParam
 from app.tools.search import SearchTool
 from openai import AsyncOpenAI
 from app.core.config import settings
@@ -65,7 +66,7 @@ class SearchService:
         """处理搜索请求"""
         return await asyncio.to_thread(self.search_tool.search, query)
 
-    async def _call_with_tool(self, query: str) -> Dict:
+    async def _call_with_tool(self, query: List[ChatCompletionMessageParam]) -> Dict:
         """调用模型并获取工具调用结果"""
         try:
             logger.info(f"Calling model with query: {query}")
@@ -74,7 +75,7 @@ class SearchService:
             response = await self.client.chat.completions.create(
                 model=self.model,
                 messages=query,
-                tools=self.tool_registry.get_tools_definition(),
+                tools=self.tool_registry.get_tools_definition(),  # type: ignore
                 tool_choice="auto"  # 让模型自己决定是否使用工具
             )
             

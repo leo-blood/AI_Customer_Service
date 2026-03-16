@@ -57,11 +57,11 @@ class Settings(BaseSettings):
 
     # @property 用于将方法转换为只读属性，访问对象函数像访问属性一样，不需要括号
     @property
-    def DATABASE_URL(self) -> str:
+    def database_url(self) -> str:
         return f"mysql+aiomysql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
     
     @property
-    def REDIS_URL(self) -> str:
+    def redis_url(self) -> str:
         """构建Redis URL"""
         auth = f":{self.REDIS_PASSWORD}@" if self.REDIS_PASSWORD else ""
         return f"redis://{auth}{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"

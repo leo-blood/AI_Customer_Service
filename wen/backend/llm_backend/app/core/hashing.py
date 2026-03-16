@@ -1,4 +1,5 @@
-import bcrypt  # 一个专门用于密码哈希的加密库，专为密码存储设计，比普通哈希（如 MD5、SHA256）更安全
+# 一个专门用于密码哈希的加密库，专为密码存储设计，比普通哈希（如 MD5、SHA256）更安全
+import bcrypt
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """验证密码

@@ -13,7 +13,6 @@ class User(Base):
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
     last_login = Column(DateTime, nullable=True)
     status = Column(String(20), default="active")
-    
-    # 关系
+
     # 所有操作级联，save-update, merge, delete, refresh-expire, expire；删除孤儿记录，自动删除没有父对象的子记录
     conversations = relationship("Conversation", back_populates="user", cascade="all, delete-orphan")

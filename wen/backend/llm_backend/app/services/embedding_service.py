@@ -1,11 +1,10 @@
-from typing import Dict, List, Optional
+from typing import Dict, List
 import aiohttp
 import asyncio
 import numpy as np
 import faiss
 import json
 from pathlib import Path
-import os
 import hashlib
 import time
 import PyPDF2
@@ -13,7 +12,6 @@ from app.core.config import settings
 from app.core.logger import get_logger
 
 logger = get_logger(__name__)
-
 
 class EmbeddingService:
     def __init__(self):
@@ -37,10 +35,10 @@ class EmbeddingService:
             async with aiohttp.ClientSession() as session:
                 data = {
                     "model": self.model,
-                    "prompt": text
+                    "input": text
                 }
 
-                async with session.post(f"{self.base_url}/api/embeddings", json=data) as resp:
+                async with session.post(f"{self.base_url}/api/embed", json=data) as resp:
                     if resp.status == 200:
                         result = await resp.json()
                         embedding = result.get('embedding', [])

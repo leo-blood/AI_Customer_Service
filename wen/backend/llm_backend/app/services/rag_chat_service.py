@@ -3,7 +3,6 @@ from .embedding_service import EmbeddingService
 from openai import AsyncOpenAI
 from app.core.config import settings
 import json
-import re
 from app.core.logger import get_logger
 
 logger = get_logger(service="rag_chat")
@@ -19,11 +18,7 @@ class RAGChatService:
         
         # 添加结构化输出的提示模板
         self.structured_prompt = """
-
-        基于以下文档内容回答用户的问题：
-
-        {context}
-
+        基于以下文档内容回答用户的问题：{context}
         用户问题：{query}
         """
 

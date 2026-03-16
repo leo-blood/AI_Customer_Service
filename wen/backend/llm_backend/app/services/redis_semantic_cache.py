@@ -3,8 +3,9 @@ import redis
 import hashlib
 import numpy as np
 import json
-import time
 import aiohttp
+from openai.types.chat import ChatCompletionMessageParam
+
 from app.core.config import settings
 from app.core.logger import get_logger
 import asyncio
@@ -25,7 +26,7 @@ class RedisSemanticCache:
         max_cache_size: int = 1000,  # 每个用户最大缓存条数
         cleanup_interval: int = 3600  # 清理间隔(秒)
     ):
-        self.redis = redis.from_url(redis_url or settings.REDIS_URL)
+        self.redis = redis.from_url(redis_url or settings.redis_url)
         self.model_name = model_name or settings.OLLAMA_EMBEDDING_MODEL
         self.score_threshold = score_threshold or settings.REDIS_CACHE_THRESHOLD
         """ if user_id:
@@ -134,7 +135,7 @@ class RedisSemanticCache:
         """删除一个缓存项的所有相关键"""
         try:
             # 所有key都需要编码
-            self.redis.delete(
+            await self.redis.delete(
                 f"{self.prefix}:vec:{hash_id}".encode('utf-8'),
                 f"{self.prefix}:resp:{hash_id}".encode('utf-8'),
                 f"{self.prefix}:meta:{hash_id}".encode('utf-8')
@@ -157,11 +158,11 @@ class RedisSemanticCache:
                 "last_access": datetime.now().timestamp(),
                 "access_count": current_meta["access_count"] + 1
             }
-            self.redis.set(meta_key, json.dumps(metadata), ex=settings.REDIS_CACHE_EXPIRE)
+            await self.redis.set(meta_key, json.dumps(metadata), ex=settings.REDIS_CACHE_EXPIRE)
         except Exception as e:
             logger.error(f"Error updating metadata: {str(e)}", exc_info=True)
 
-    async def lookup(self, messages: List[Dict]) -> Optional[str]:
+    async def lookup(self, messages: List[ChatCompletionMessageParam]) -> Optional[str]:
         """查找缓存的响应"""
         try:
             user_message = self._get_last_user_message(messages)
@@ -219,15 +220,15 @@ class RedisSemanticCache:
             expire = expire or settings.REDIS_CACHE_EXPIRE
             
             # 存储向量、响应和元数据 - 确保存储为字符串
-            self.redis.set(vec_key, json.dumps(vector), ex=expire)
-            self.redis.set(resp_key, response.encode('utf-8'), ex=expire)  # 编码为bytes
+            await self.redis.set(vec_key, json.dumps(vector), ex=expire)
+            await self.redis.set(resp_key, response.encode('utf-8'), ex=expire)  # 编码为bytes
             
             metadata = {
                 "created_at": datetime.now().timestamp(),
                 "last_access": datetime.now().timestamp(),
                 "access_count": 1
             }
-            self.redis.set(meta_key, json.dumps(metadata), ex=expire)
+            await self.redis.set(meta_key, json.dumps(metadata), ex=expire)
             
             logger.info(f"Cache updated for message: {user_message[:50]}...")
             
